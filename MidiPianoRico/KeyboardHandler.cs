@@ -73,7 +73,7 @@ namespace MidiPianoRico
                 if (controllerMode != 0)
                 {
                     controllerMode = 0;
-                    MessageBox.Show("Next page");
+                    home.pictureBox.
                 }
             }
             else

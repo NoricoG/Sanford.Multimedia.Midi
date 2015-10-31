@@ -26,27 +26,43 @@ namespace MidiPianoRico
 {
     partial class Home : Form
     {
-        KeyboardHandler keyboardHandler;
-        FileHandler fileHandler;
-        MidiFile midiFile;
+        private KeyboardHandler keyboardHandler;
+        private FileHandler fileHandler;
+        private Bitmap bitmap;
+        public PictureBox pictureBox;
 
         public Home()
         {
+            int width = 1920;
+            int height = 1200;
+
             FormBorderStyle = FormBorderStyle.None;
             WindowState = FormWindowState.Maximized;
-            Size = new Size(1920, 1200);
+            Size = new Size(width, height);
             Text = "MidiPianoRico";
+
+            int barHeight = 100;
+
+            Button openImageButton = new Button();
+            openImageButton.Size = new Size(width, barHeight);
+            openImageButton.Location = new Point(0, 0);
+            openImageButton.Click += OpenImageButton_Click;
+            Controls.Add(openImageButton);
+
+            pictureBox = new PictureBox();
+            pictureBox.Size = new Size(width, barHeight);
+            pictureBox.Location = new Point(barHeight, height - barHeight);
+            Controls.Add(pictureBox);
+
+
 
             keyboardHandler = new KeyboardHandler(this);
             fileHandler = new FileHandler(this);
-
-            Click += ClickHandler;
         }
 
-        private void ClickHandler(Object sender, EventArgs e)
+        private void OpenImageButton_Click(object sender, EventArgs e)
         {
-            midiFile = fileHandler.OpenFile();
-            MessageBox.Show(midiFile.ToString());
+            pictureBox.Image = fileHandler.OpenImage();
         }
     }
 }
