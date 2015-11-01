@@ -28,7 +28,6 @@ namespace MidiPianoRico
     {
         private KeyboardHandler keyboardHandler;
         private FileHandler fileHandler;
-        private Bitmap bitmap;
         public PictureBox pictureBox;
 
         public Home()
@@ -43,18 +42,16 @@ namespace MidiPianoRico
 
             int barHeight = 100;
 
+            pictureBox = new PictureBox();
+            pictureBox.Size = new Size(width, barHeight);
+            pictureBox.Location = new Point(0, height - barHeight);
+            Controls.Add(pictureBox);
+
             Button openImageButton = new Button();
             openImageButton.Size = new Size(width, barHeight);
             openImageButton.Location = new Point(0, 0);
             openImageButton.Click += OpenImageButton_Click;
             Controls.Add(openImageButton);
-
-            pictureBox = new PictureBox();
-            pictureBox.Size = new Size(width, barHeight);
-            pictureBox.Location = new Point(barHeight, height - barHeight);
-            Controls.Add(pictureBox);
-
-
 
             keyboardHandler = new KeyboardHandler(this);
             fileHandler = new FileHandler(this);
@@ -62,7 +59,19 @@ namespace MidiPianoRico
 
         private void OpenImageButton_Click(object sender, EventArgs e)
         {
-            pictureBox.Image = fileHandler.OpenImage();
+            Bitmap bitmap = fileHandler.OpenPNG();
+            float ratio = bitmap.Width / pictureBox.Width;
+            if (ratio > 1)
+            {
+                bitmap = new Bitmap(bitmap, (int)(bitmap.Width / ratio), (int)(bitmap.Height / ratio));
+            }
+            pictureBox.Image = bitmap;
+            pictureBox.Size = bitmap.Size;
+        }
+
+        public void MovePictureBox()
+        {
+            pictureBox.Location = new Point(pictureBox.Location.X, pictureBox.Location.Y - 100);
         }
     }
 }

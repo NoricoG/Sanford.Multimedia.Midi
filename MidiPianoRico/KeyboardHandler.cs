@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Threading;
 using Sanford.Multimedia;
 using Sanford.Multimedia.Midi;
-using System.Windows.Forms;
 
 namespace MidiPianoRico
 {
@@ -26,9 +25,7 @@ namespace MidiPianoRico
 
             if (InputDevice.DeviceCount == 0)
             {
-                MessageBox.Show("No MIDI input devices available.", "Error!",
-                    MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                home.Close();
+                throw new ApplicationException("Error: No MIDI input devices available.");
             }
             else
             {
@@ -49,9 +46,7 @@ namespace MidiPianoRico
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Error!",
-                        MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                    home.Close();
+                    throw new ApplicationException("Error: " + ex);
                 }
             }
         }
@@ -73,7 +68,7 @@ namespace MidiPianoRico
                 if (controllerMode != 0)
                 {
                     controllerMode = 0;
-                    home.pictureBox.
+                    home.MovePictureBox();
                 }
             }
             else
@@ -81,7 +76,7 @@ namespace MidiPianoRico
                 if (controllerMode != 2)
                 {
                     controllerMode = 2;
-                    MessageBox.Show("Next page");
+                    home.MovePictureBox();
                 }
             }
         }
@@ -90,7 +85,7 @@ namespace MidiPianoRico
         {
             context.Post(delegate (object dummy)
             {
-                MessageBox.Show("This has yet to be implemented");
+                throw new ApplicationException("Error: This has yet to be implemented");
             }, null);
         }
 
@@ -98,7 +93,7 @@ namespace MidiPianoRico
         {
             context.Post(delegate (object dummy)
             {
-                MessageBox.Show("This has yet to be implemented");
+                throw new ApplicationException("Error: This has yet to be implemented");
             }, null);
         }
 
@@ -106,14 +101,13 @@ namespace MidiPianoRico
         {
             context.Post(delegate (object dummy)
             {
-                MessageBox.Show("This has yet to be implemented");
+                throw new ApplicationException("Error: This has yet to be implemented");
             }, null);
         }
 
         private void inDevice_Error(object sender, ErrorEventArgs e)
         {
-            MessageBox.Show(e.Error.Message, "Error!",
-                   MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            throw new ApplicationException("Error!");
         }
     }
 }

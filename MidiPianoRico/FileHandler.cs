@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
-using System.Windows.Drawing;
+using System.Drawing;
 
 namespace MidiPianoRico
 {
@@ -18,6 +18,25 @@ namespace MidiPianoRico
             this.home = home;
         }
 
-        public Image OpenImage
+        public Bitmap OpenPNG()
+        {
+            try
+            {
+                OpenFileDialog open = new OpenFileDialog();
+                open.Filter = "PNG Image Files(*.png)|*.png;";
+                if (open.ShowDialog() == DialogResult.OK)
+                {
+                    return new Bitmap(open.FileName);
+                }
+                else
+                {
+                    throw new ApplicationException("Error: Failed loading image");
+                }
+            }
+            catch (Exception)
+            {
+                throw new ApplicationException("Error: Failed loading image");
+            }
+        }
     }
 }
