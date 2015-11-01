@@ -11,27 +11,6 @@ namespace MidiPianoRico
 {
     static class FileHandler
     {
-        public static Bitmap OpenPNG()
-        {
-            try
-            {
-                OpenFileDialog open = new OpenFileDialog();
-                open.Filter = "PNG Image Files(*.png)|*.png;";
-                if (open.ShowDialog() == DialogResult.OK)
-                {
-                    return new Bitmap(open.FileName);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            catch (Exception)
-            {
-                throw new ApplicationException("Error: Failed loading image");
-            }
-        }
-
         public static Settings LoadSettings()
         {
             string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MidiPianoRico");
@@ -74,7 +53,7 @@ namespace MidiPianoRico
         public static List<string> GetFilePaths(string path)
         {
             List<string> paths = new List<string>();
-            MessageBox.Show("The selected path is: " + path);
+            //MessageBox.Show("The selected path is: " + path);
             string[] found = Directory.GetFiles(path, "*.mscz");
             for (int i = 0; i < found.Length; i++)
             {
@@ -84,6 +63,30 @@ namespace MidiPianoRico
             }
             paths.Sort();
             return paths;
+        }
+
+        public static Bitmap[] LoadPages(string path, string song, int width)
+        {
+            string[] found = Directory.GetFiles(path, song + "-?.png");
+            Bitmap[] result = new Bitmap[found.Length];
+            for (int i = 0; i < found.Length; i++)
+            {
+                try
+                {
+                    result[i] = new Bitmap(found[i]);
+                    float ratio = (float)result[i].Width / width;
+                    if (ratio > 1)
+                    {
+                        result[i] = new Bitmap(result[i], (int)((float)result[i].Width / ratio), (int)((float)result[i].Height / ratio));
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Failed to load an image");
+                    result[i] = new Bitmap(width, 100);
+                }
+            }
+            return result;
         }
     }
 }

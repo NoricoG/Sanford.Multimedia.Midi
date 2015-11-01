@@ -11,27 +11,27 @@ namespace MidiPianoRico
 {
     partial class Home : Form
     {
-
         private void FolderComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string path = ((ToolStripComboBox)sender).SelectedItem.ToString();
-            SetComboBoxItems(songComboBox, FileHandler.GetFilePaths(path));
+            UpdateSongComboBox();
+        }
+
+        private void UpdateSongComboBox()
+        {
+            if (folderComboBox.Items.Count > 0)
+            {
+                if (folderComboBox.SelectedItem == null)
+                {
+                    folderComboBox.SelectedIndex = 0;
+                } 
+                string path = folderComboBox.SelectedItem.ToString();
+                SetComboBoxItems(songComboBox, FileHandler.GetFilePaths(path));
+            }
         }
 
         private void ShowSongButton_Click(object sender, EventArgs e)
         {
-            Bitmap bitmap = FileHandler.OpenPNG();
-            if (bitmap != null)
-            {
-                float ratio = (float)bitmap.Width / pictureBox.Width;
-                if (ratio > 1)
-                {
-                    MessageBox.Show("pictureBox width: " + pictureBox.Width + " bitmap width: " + bitmap.Width + " ratio: " + ratio + " new bitmap width: " + ((int)((float)bitmap.Width / ratio)));
-                    bitmap = new Bitmap(bitmap, (int)((float)bitmap.Width / ratio), (int)((float)bitmap.Height / ratio));
-                }
-                pictureBox.Image = bitmap;
-                pictureBox.Size = bitmap.Size;
-            }
+            LoadPages();
         }
 
         private void ShowHelpButton_Click(object sender, EventArgs e)
@@ -40,6 +40,11 @@ namespace MidiPianoRico
         }
 
         private void LaunchPlayerButton_Click(object sender, EventArgs e)
+        {
+            LaunchPlayer();
+        }
+
+        private void LaunchPlayer()
         {
             System.Diagnostics.Process.Start(settings.playerPath);
         }
@@ -86,31 +91,103 @@ namespace MidiPianoRico
             }
         }
 
-        public void HandleStopButtonPress() { }
+        public void HandleStopButtonPress()
+        {
+            if (! exitPressed)
+            {
+                exitPressed = true;
+                exitPressedLabel.Show();
+                pictureBox.Hide();
+            }
+            else
+            {
+                Close();
+            }
+        }
 
-        public void HandlePlayButtonPress() { }
+        public void HandlePlayButtonPress()
+        {
+            if (exitPressed)
+            {
+                exitPressed = false;
+                exitPressedLabel.Hide();
+                pictureBox.Show();
+            }
+            else
+            {
+                LaunchPlayer();
+            }
+        }
 
-        public void HandleRecordButtonPress() { }
+        public void HandleRecordButtonPress()
+        {
+            ShowHideHelp();
+        }
 
         public void HandleUpButtonPress()
         {
-            NextPicture();
+            PreviousPage();
         }
 
         public void HandleDownButtonPress()
         {
-            PreviousPicture();
+            NextPage();
         }
 
-        public void HandleLeftButtonPress() { }
-
-        public void HandleRightButtonPress() { }
-
-        public void HandleCenterButtonPress() { }
-
-        private void ShowHideHelp()
+        public void HandleLeftButtonPress()
         {
+            if (folderSwitching)
+            {
+                if (folderComboBox.SelectedIndex > 0)
+                {
+                    folderComboBox.SelectedIndex--;
+                }
+                UpdateSongComboBox();
+            }
+            else
+            {
+                if (songComboBox.SelectedIndex > 0)
+                {
+                    songComboBox.SelectedIndex--;
+                }
+                LoadPages();
+            }
+        }
 
+        public void HandleRightButtonPress()
+        {
+            if (folderSwitching)
+            {
+                if (folderComboBox.SelectedIndex + 1 < folderComboBox.Items.Count)
+                {
+                    folderComboBox.SelectedIndex++;
+                }
+                UpdateSongComboBox();
+            }
+            else
+            {
+                if (songComboBox.SelectedIndex + 1 < songComboBox.Items.Count)
+                {
+                    songComboBox.SelectedIndex++;
+                }
+                LoadPages();
+            }
+        }
+
+        public void HandleCenterButtonPress()
+        {
+            if (folderSwitching)
+            {
+                folderSwitching = false;
+                folderSwitchingLabel.Hide();
+                pictureBox.Show();
+            }
+            else
+            {
+                folderSwitching = true;
+                folderSwitchingLabel.Show();
+                pictureBox.Hide();
+            }
         }
     }
 }

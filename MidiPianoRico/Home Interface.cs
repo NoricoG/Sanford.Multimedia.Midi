@@ -25,10 +25,16 @@ namespace MidiPianoRico
     {
         private HUIKeyboardHandler hUIKeyboardHandler;
         public PictureBox pictureBox;
-        //private Bitmap[] pages;
         private Settings settings;
-        ToolStripComboBox folderComboBox, songComboBox;
 
+        ToolStripComboBox folderComboBox, songComboBox;
+        Label folderSwitchingLabel, exitPressedLabel;
+
+        private Bitmap[] pages;
+        private int currentPage = 1;
+        private bool folderSwitching = false;
+        private bool exitPressed = false;
+        
         public Home()
         {
             Text = "MidiPianoRico";
@@ -68,6 +74,7 @@ namespace MidiPianoRico
             songComboBox.AutoSize = false;
             songComboBox.Width = 25;
             toolStrip.Items.Add(songComboBox);
+            UpdateSongComboBox();
 
             ToolStripButton showSongButton = new ToolStripButton();
             showSongButton.Text = "Show song";
@@ -104,9 +111,26 @@ namespace MidiPianoRico
             toolStrip.Items.Add(changeInputButton);
 
             pictureBox = new PictureBox();
+            pictureBox.BackColor = Color.White;
             pictureBox.Size = new Size(Size.Width, Size.Height - toolStrip.Height);
             pictureBox.Location = new Point(0, toolStrip.Height);
             Controls.Add(pictureBox);
+
+            folderSwitchingLabel = new Label();
+            folderSwitchingLabel.Text = ("Press left or right to change a folder and select to confirm");
+            folderSwitchingLabel.TextAlign = ContentAlignment.MiddleCenter;
+            folderSwitchingLabel.Size = Size;
+            folderSwitchingLabel.Hide();
+            Controls.Add(folderSwitchingLabel);
+
+            exitPressedLabel = new Label();
+            exitPressedLabel.Text = ("Press stop to exit or play to continue");
+            exitPressedLabel.TextAlign = ContentAlignment.MiddleCenter;
+            exitPressedLabel.Size = Size;
+            exitPressedLabel.Hide();
+            Controls.Add(exitPressedLabel);
+
+            LoadPages();
         }
 
         private void SetComboBoxItems(ToolStripComboBox comboBox, List<string> items)
@@ -123,14 +147,49 @@ namespace MidiPianoRico
             comboBox.DropDownWidth = maxWidth;
         }
 
-        private void NextPicture()
+        private void LoadPages()
         {
-            throw new NotImplementedException();
+            if (folderComboBox.Items.Count > 0)
+            {
+                if (folderComboBox.SelectedItem == null)
+                {
+                    folderComboBox.SelectedIndex = 0;
+                }
+                if (songComboBox.Items.Count > 0)
+                {
+                    if (songComboBox.SelectedItem == null)
+                    {
+                        songComboBox.SelectedIndex = 0;
+                    }
+                    pages = FileHandler.LoadPages(folderComboBox.SelectedItem.ToString(), songComboBox.SelectedItem.ToString(), pictureBox.Width);
+                    currentPage = 0;
+                    ShowPage();
+                }
+            } 
         }
 
-        private void PreviousPicture()
+        private void ShowPage()
         {
-            throw new NotImplementedException();
+            pictureBox.Image = pages[currentPage];
+        }
+
+        private void NextPage()
+        {
+            if (currentPage + 1 < pages.Length)
+                currentPage++;
+            ShowPage();
+        }
+
+        private void PreviousPage()
+        {
+            if (currentPage > 0)
+                currentPage--;
+            ShowPage();
+        }
+
+        private void ShowHideHelp()
+        {
+            MessageBox.Show("help");
         }
     }
 }
