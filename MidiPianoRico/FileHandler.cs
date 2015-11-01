@@ -9,16 +9,9 @@ using System.Drawing;
 
 namespace MidiPianoRico
 {
-    class FileHandler
+    static class FileHandler
     {
-        private Home home;
-
-        public FileHandler(Home home)
-        {
-            this.home = home;
-        }
-
-        public Bitmap OpenPNG()
+        public static Bitmap OpenPNG()
         {
             try
             {
@@ -30,12 +23,39 @@ namespace MidiPianoRico
                 }
                 else
                 {
-                    throw new ApplicationException("Error: Failed loading image");
+                    return null;
                 }
             }
             catch (Exception)
             {
                 throw new ApplicationException("Error: Failed loading image");
+            }
+        }
+
+        public static Settings LoadSettings()
+        {
+            return new Settings();
+        }
+
+        public static string SelectVMPKPath()
+        {
+            try
+            {
+                OpenFileDialog open = new OpenFileDialog();
+                open.InitialDirectory = "C:/Program Files (x86)/vmpk";
+                open.FileName = "vmpk.exe";
+                if (open.ShowDialog() == DialogResult.OK)
+                {
+                    return open.FileName;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+                throw new ApplicationException("Error: Failed selecting VMPK path");
             }
         }
     }
