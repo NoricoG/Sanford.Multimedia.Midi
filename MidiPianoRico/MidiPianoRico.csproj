@@ -51,9 +51,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileHandler.cs" />
+    <Compile Include="Home Input.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="HUIKeyboardHandler.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Home.cs">
+    <Compile Include="Home Interface.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Settings.cs" />

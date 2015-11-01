@@ -34,29 +34,56 @@ namespace MidiPianoRico
 
         public static Settings LoadSettings()
         {
-            return new Settings();
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MidiPianoRico");
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            path += "/settings.txt";
+
+            if (File.Exists(path))
+            {
+                List<string> lines = new List<string>();
+                using (StreamReader streamReader = new StreamReader(path))
+                {
+                    string line = "";
+                    while ((line = streamReader.ReadLine()) != null)
+                        lines.Add(line);
+                }
+                return new Settings(lines);
+            }
+            else
+            {
+                Settings settings = new Settings();
+                SaveSettings(settings);
+                return settings;
+            }
         }
 
-        public static string SelectVMPKPath()
+        public static void SaveSettings(Settings settings)
         {
-            try
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MidiPianoRico/settings.txt");
+            using (StreamWriter streamWriter = new StreamWriter(path))
             {
-                OpenFileDialog open = new OpenFileDialog();
-                open.InitialDirectory = "C:/Program Files (x86)/vmpk";
-                open.FileName = "vmpk.exe";
-                if (open.ShowDialog() == DialogResult.OK)
+                foreach (string line in settings.ToLines())
                 {
-                    return open.FileName;
-                }
-                else
-                {
-                    return null;
+                    streamWriter.WriteLine(line);
                 }
             }
-            catch (Exception)
+
+        }
+
+        public static List<string> GetFilePaths(string path)
+        {
+            List<string> paths = new List<string>();
+            MessageBox.Show("The selected path is: " + path);
+            string[] found = Directory.GetFiles(path, "*.mscz");
+            for (int i = 0; i < found.Length; i++)
             {
-                throw new ApplicationException("Error: Failed selecting VMPK path");
+                int filenameLength = found[i].Length - path.Length - 6;
+                string filename = found[i].Substring(path.Length + 1, filenameLength);
+                paths.Add(filename);
             }
+            paths.Sort();
+            return paths;
         }
     }
 }
