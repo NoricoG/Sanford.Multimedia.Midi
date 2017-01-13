@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace MidiPianoRico
 {
@@ -28,8 +29,16 @@ namespace MidiPianoRico
                 {
                     for (int i = 2; i < lines.Count; i++)
                     {
-                        folderPaths.Add(lines[i]);
+                        if (Directory.Exists(lines[i]))
+                        {
+                            folderPaths.Add(lines[i]);
+                        }
+                        else
+                        {
+                            MessageBox.Show("The folder \"" + lines[i] + "\" doesn't exist anymore");
+                        }
                     }
+                    FileHandler.SaveSettings(this);
                 }
             }
             catch

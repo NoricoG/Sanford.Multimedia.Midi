@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using Sanford.Multimedia.Midi.UI;
+using System.Diagnostics;
 
 /*
 TODO:
@@ -27,22 +28,31 @@ namespace MidiPianoRico
         public PictureBox pictureBox;
         private Settings settings;
 
-        ToolStripComboBox folderComboBox, songComboBox;
-        Label folderSwitchingLabel, exitPressedLabel;
+        private ToolStripComboBox folderComboBox, songComboBox, metronomeComboBox;
+        private Label folderSwitchingLabel, exitPressedLabel;
+        private ToolStripButton metronomeButton;
 
         private Bitmap[] pages;
         private int currentPage = 1;
         private bool folderSwitching = false;
         private bool exitPressed = false;
+        private bool playerLaunched = false;
+        private Timer metronomeTimer;
         
         public Home()
         {
             Text = "MidiPianoRico";
             hUIKeyboardHandler = new HUIKeyboardHandler(this, 1);
             settings = FileHandler.LoadSettings();
+            Load += Home_Load;
             SetSize();
             AddControls();
+
+            metronomeTimer = new Timer();
+            metronomeTimer.Tick += MetronomeTimer_Tick;
         }
+
+
 
         private void SetSize()
         {
@@ -74,7 +84,6 @@ namespace MidiPianoRico
             songComboBox.AutoSize = false;
             songComboBox.Width = 25;
             toolStrip.Items.Add(songComboBox);
-            UpdateSongComboBox();
 
             ToolStripButton showSongButton = new ToolStripButton();
             showSongButton.Text = "Show song";
@@ -83,17 +92,32 @@ namespace MidiPianoRico
 
             toolStrip.Items.Add(new ToolStripSeparator());
 
-            ToolStripButton showHelpButton = new ToolStripButton();
-            showHelpButton.Text = "Show help";
-            showHelpButton.Click += ShowHelpButton_Click;
-            toolStrip.Items.Add(showHelpButton);
+            ToolStripLabel metronomeLabel = new ToolStripLabel();
+            songLabel.Text = "Metronome";
+            toolStrip.Items.Add(metronomeLabel);
+
+            metronomeComboBox = new ToolStripComboBox();
+            metronomeComboBox.Items.Add("30");
+            metronomeComboBox.Items.Add("40");
+            metronomeComboBox.Items.Add("50");
+            metronomeComboBox.Items.Add("60");
+            metronomeComboBox.Items.Add("70");
+            metronomeComboBox.Items.Add("80");
+            metronomeComboBox.Items.Add("90");
+            metronomeComboBox.Items.Add("100");
+            toolStrip.Items.Add(metronomeComboBox);
+
+            metronomeButton = new ToolStripButton();
+            metronomeButton.Text = "Start";
+            metronomeButton.Click += MetronomeButton_Click;
+            toolStrip.Items.Add(metronomeButton);
+
+            toolStrip.Items.Add(new ToolStripSeparator());
 
             ToolStripButton launchPlayerButton = new ToolStripButton();
             launchPlayerButton.Text = "Launch player";
             launchPlayerButton.Click += LaunchPlayerButton_Click;
             toolStrip.Items.Add(launchPlayerButton);
-
-            toolStrip.Items.Add(new ToolStripSeparator());
 
             ToolStripButton addFolderButton = new ToolStripButton();
             addFolderButton.Text = "Add folder";
@@ -112,9 +136,10 @@ namespace MidiPianoRico
 
             pictureBox = new PictureBox();
             pictureBox.BackColor = Color.White;
-            pictureBox.Size = new Size(Size.Width, Size.Height - toolStrip.Height);
+            pictureBox.Size = new Size(Size.Width, Size.Height - toolStrip.Height); //1920x1200 -> 1920x1145
             pictureBox.Location = new Point(0, toolStrip.Height);
             Controls.Add(pictureBox);
+            //MessageBox.Show(pictureBox.Width + " " + pictureBox.Height);
 
             folderSwitchingLabel = new Label();
             folderSwitchingLabel.Text = ("Press left or right to change a folder and select to confirm");
@@ -130,66 +155,13 @@ namespace MidiPianoRico
             exitPressedLabel.Hide();
             Controls.Add(exitPressedLabel);
 
-            LoadPages();
-        }
-
-        private void SetComboBoxItems(ToolStripComboBox comboBox, List<string> items)
-        {
-            comboBox.Items.Clear();
-            int maxWidth = 25;
-            Graphics graphics = Graphics.FromImage(new Bitmap(10, 10));
-            foreach (string item in items)
+            if (settings.folderPaths.Count > 0)
             {
-                comboBox.Items.Add(item);
-                maxWidth = Math.Max(maxWidth, (int)graphics.MeasureString(item, Font).Width + 25);
+                SetFolderComboBoxItems(settings.folderPaths);
+                UpdateSongComboBox();
             }
-            comboBox.Width = maxWidth;
-            comboBox.DropDownWidth = maxWidth;
-        }
 
-        private void LoadPages()
-        {
-            if (folderComboBox.Items.Count > 0)
-            {
-                if (folderComboBox.SelectedItem == null)
-                {
-                    folderComboBox.SelectedIndex = 0;
-                }
-                if (songComboBox.Items.Count > 0)
-                {
-                    if (songComboBox.SelectedItem == null)
-                    {
-                        songComboBox.SelectedIndex = 0;
-                    }
-                    pages = FileHandler.LoadPages(folderComboBox.SelectedItem.ToString(), songComboBox.SelectedItem.ToString(), pictureBox.Width);
-                    currentPage = 0;
-                    ShowPage();
-                }
-            } 
-        }
-
-        private void ShowPage()
-        {
-            pictureBox.Image = pages[currentPage];
-        }
-
-        private void NextPage()
-        {
-            if (currentPage + 1 < pages.Length)
-                currentPage++;
-            ShowPage();
-        }
-
-        private void PreviousPage()
-        {
-            if (currentPage > 0)
-                currentPage--;
-            ShowPage();
-        }
-
-        private void ShowHideHelp()
-        {
-            MessageBox.Show("help");
+            LoadPages();
         }
     }
 }

@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MidiWatcher", "Demo\MidiWat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MidiPianoRico", "MidiPianoRico\MidiPianoRico.csproj", "{2CC168C7-9D05-4E05-ACBF-68B703048A97}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PitchPlease", "PitchPlease\PitchPlease.csproj", "{DD29D8E7-D499-4F71-AE48-7B1581CB7B84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{2CC168C7-9D05-4E05-ACBF-68B703048A97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CC168C7-9D05-4E05-ACBF-68B703048A97}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CC168C7-9D05-4E05-ACBF-68B703048A97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD29D8E7-D499-4F71-AE48-7B1581CB7B84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD29D8E7-D499-4F71-AE48-7B1581CB7B84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD29D8E7-D499-4F71-AE48-7B1581CB7B84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD29D8E7-D499-4F71-AE48-7B1581CB7B84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

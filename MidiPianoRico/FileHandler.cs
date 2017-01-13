@@ -73,7 +73,10 @@ namespace MidiPianoRico
             {
                 try
                 {
-                    result[i] = new Bitmap(found[i]);
+                    using (Image temp = Image.FromFile(found[i]))
+                    {
+                        result[i] = new Bitmap(temp);
+                    }
                     float ratio = (float)result[i].Width / width;
                     if (ratio > 1)
                     {

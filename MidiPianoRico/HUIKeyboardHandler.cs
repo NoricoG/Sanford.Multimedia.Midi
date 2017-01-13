@@ -35,13 +35,18 @@ namespace MidiPianoRico
                     context = SynchronizationContext.Current;
                     inDevice = new InputDevice(inputDeviceID);
                     inDevice.ChannelMessageReceived += HandleChannelMessageReceived;
-                    inDevice.StartRecording();
+                    inDevice.StartRecording();              
                 }
                 catch (Exception ex)
                 {
                     throw new ApplicationException("Error: " + ex);
                 }
             }
+        }
+
+        public void Close()
+        {
+            inDevice.Close();
         }
 
         private void HandleChannelMessageReceived(object sender, ChannelMessageEventArgs e)

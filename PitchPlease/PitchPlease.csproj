@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2CC168C7-9D05-4E05-ACBF-68B703048A97}</ProjectGuid>
+    <ProjectGuid>{DD29D8E7-D499-4F71-AE48-7B1581CB7B84}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MidiPianoRico</RootNamespace>
-    <AssemblyName>MidiPianoRico</AssemblyName>
+    <RootNamespace>PitchPlease</RootNamespace>
+    <AssemblyName>PitchPlease</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -39,10 +39,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Midi\Sanford.Multimedia.Midi.csproj">
-      <Project>{4269c72a-8d3a-4737-8f89-72eaa33ea9e1}</Project>
-      <Name>Sanford.Multimedia.Midi</Name>
-    </ProjectReference>
+    <Compile Include="KeyboardHandler.cs" />
+    <Compile Include="PitchPlease.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -50,19 +51,10 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileHandler.cs" />
-    <Compile Include="Home Functions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Home Input.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="HUIKeyboardHandler.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Home Interface.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Settings.cs" />
+    <ProjectReference Include="..\Midi\Sanford.Multimedia.Midi.csproj">
+      <Project>{4269c72a-8d3a-4737-8f89-72eaa33ea9e1}</Project>
+      <Name>Sanford.Multimedia.Midi</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

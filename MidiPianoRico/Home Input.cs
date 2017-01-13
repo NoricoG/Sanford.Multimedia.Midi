@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using Sanford.Multimedia.Midi.UI;
+using System.Diagnostics;
 
 namespace MidiPianoRico
 {
@@ -13,20 +14,8 @@ namespace MidiPianoRico
     {
         private void FolderComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateSongComboBox();
-        }
-
-        private void UpdateSongComboBox()
-        {
-            if (folderComboBox.Items.Count > 0)
-            {
-                if (folderComboBox.SelectedItem == null)
-                {
-                    folderComboBox.SelectedIndex = 0;
-                } 
-                string path = folderComboBox.SelectedItem.ToString();
-                SetComboBoxItems(songComboBox, FileHandler.GetFilePaths(path));
-            }
+            string path = folderComboBox.SelectedItem.ToString();
+            SetSongComboBoxItems(FileHandler.GetFilePaths(path));
         }
 
         private void ShowSongButton_Click(object sender, EventArgs e)
@@ -34,19 +23,29 @@ namespace MidiPianoRico
             LoadPages();
         }
 
-        private void ShowHelpButton_Click(object sender, EventArgs e)
+        private void MetronomeTimer_Tick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Console.Beep(500, 200);
+        }
+
+        private void MetronomeButton_Click(object sender, EventArgs e)
+        {
+            if (metronomeTimer.Enabled)
+            {
+                metronomeTimer.Enabled = false;
+                metronomeButton.Text = "Start";
+            }
+            else
+            {
+                metronomeTimer.Interval = (int ) (1 / (float.Parse(metronomeComboBox.SelectedText) / 60) * 1000);
+                metronomeTimer.Enabled = true;
+                metronomeButton.Text = "Stop";
+            }
         }
 
         private void LaunchPlayerButton_Click(object sender, EventArgs e)
         {
             LaunchPlayer();
-        }
-
-        private void LaunchPlayer()
-        {
-            System.Diagnostics.Process.Start(settings.playerPath);
         }
 
         private void AddFolderButton_Click(object sender, EventArgs e)
@@ -121,7 +120,7 @@ namespace MidiPianoRico
 
         public void HandleRecordButtonPress()
         {
-            ShowHideHelp();
+           
         }
 
         public void HandleUpButtonPress()
@@ -142,7 +141,7 @@ namespace MidiPianoRico
                 {
                     folderComboBox.SelectedIndex--;
                 }
-                UpdateSongComboBox();
+                //UpdateSongComboBox();
             }
             else
             {
@@ -162,7 +161,7 @@ namespace MidiPianoRico
                 {
                     folderComboBox.SelectedIndex++;
                 }
-                UpdateSongComboBox();
+                //UpdateSongComboBox();
             }
             else
             {
@@ -180,6 +179,7 @@ namespace MidiPianoRico
             {
                 folderSwitching = false;
                 folderSwitchingLabel.Hide();
+                UpdateSongComboBox();
                 pictureBox.Show();
             }
             else
